@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Genie - AI Gift Recommendations</title>
+    <link href="/styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center text-purple-600 mb-8">Gift Genie 🎁</h1>
+        
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
+            <form id="giftForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="age">Age</label>
+                    <input type="number" id="age" name="age" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="gender">Gender</label>
+                    <select id="gender" name="gender" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="interests">Interests (comma-separated)</label>
+                    <input type="text" id="interests" name="interests" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., gaming, reading, music">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="occasion">Occasion</label>
+                    <input type="text" id="occasion" name="occasion" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., birthday, Christmas">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="budget">Budget</label>
+                    <input type="text" id="budget" name="budget" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., $50">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="relationship">Relationship</label>
+                    <input type="text" id="relationship" name="relationship" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="e.g., friend, sister">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                    Get Gift Ideas
+                </button>
+            </form>
+
+            <div id="loading" class="hidden mt-4 text-center text-gray-600">
+                <p>🧞‍♂️ Consulting the Gift Genie...</p>
+            </div>
+
+            <div id="suggestions" class="mt-4 text-gray-700 whitespace-pre-line"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('giftForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                age: document.getElementById('age').value,
+                gender: document.getElementById('gender').value,
+                interests: document.getElementById('interests').value.split(',').map(i => i.trim()),
+                occasion: document.getElementById('occasion').value,
+                budget: document.getElementById('budget').value,
+                relationship: document.getElementById('relationship').value,
+            };
+
+            const loading = document.getElementById('loading');
+            const suggestions = document.getElementById('suggestions');
+            
+            loading.classList.remove('hidden');
+            suggestions.textContent = '';
+
+            try {
+                const response = await fetch('http://localhost:5001/api/recommendations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get recommendations');
+                }
+
+                const data = await response.json();
+                suggestions.textContent = data.suggestions;
+            } catch (error) {
+                suggestions.textContent = 'Error: ' + error.message;
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

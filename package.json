@@ -1,0 +1,29 @@
+{
+  "name": "gift-genie",
+  "version": "1.0.0",
+  "description": "AI-powered gift recommendation system",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm start",
+    "server": "cd server && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build:css": "tailwindcss -i ./src/styles.css -o ./public/styles.css",
+    "watch:css": "tailwindcss -i ./src/styles.css -o ./public/styles.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "axios": "^1.8.4",
+    "concurrently": "^8.0.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17"
+  }
+}
